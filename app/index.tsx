@@ -1,9 +1,21 @@
 import { useStyles } from "@/hooks/useStyles";
-import { Text, View, Pressable } from "react-native";
+import { Text, View, Button, TextInput } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
 
 const HomeScreen = () => {
+	const handleCreateTodoList = () => {
+		// Add logic here
+	};
+
+	const handleDeleteTodoList = (id: string) => {
+		// Add logic here
+	};
+
+	const handleUpdateTodoListTitle = (id: string, newTitle: string) => {
+		// Add logic here
+	};
+
 	// styles
 	const styles = useStyles({
 		container: {
@@ -31,12 +43,16 @@ const HomeScreen = () => {
 
 	return (
 		<View style={styles.container}>
-			<Pressable onPress={() => router.push("/screens/HomeScreen")}>
-				<Text>HomeScreen</Text>
-			</Pressable>
-			<Pressable onPress={() => router.push("/screens/ToDoList")}>
-				<Text>ToDoList</Text>
-			</Pressable>
+			<Text>Todo List Title Here</Text>
+			<TextInput
+				placeholder="Enter New Todo List Title"
+				// Add the rest here
+			/>
+			<Button
+				title="Create New To Do List"
+				onPress={/*Add function here*/}
+			/>
+			<Button title="See Todos" onPress={/*Add routing here */} />
 		</View>
 	);
 };
