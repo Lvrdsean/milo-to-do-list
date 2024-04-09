@@ -1,31 +1,74 @@
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Button, TextInput, ScrollView } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { useTodoContext } from "@/context/TodoContext";
+import { router } from "expo-router";
 
-const TodoListScreen = () => {
+const TodoListScreen: React.FC = () => {
+	const id = useLocalSearchParams<{ id?: string }>().id;
+	const {
+		todoLists,
+		addTask,
+		deleteTask,
+		updateTaskTitle,
+		toggleTaskStatus,
+	} = useTodoContext();
+	const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+	const [showCompleted, setShowCompleted] = useState<boolean | null>(null); // Use null to indicate no filter applied
+
+	const todoList = todoLists.find((todoList) => todoList.id === id);
+
+	if (!todoList) {
+		return <Text>Todo list not found</Text>;
+	}
+
 	const handleAddTask = () => {
-		// Add logic here
+		if (typeof id === "string" && newTaskTitle.trim() !== "") {
+			addTask(id, newTaskTitle.trim());
+			setNewTaskTitle("");
+		} else {
+			console.error("No ID provided for adding task");
+		}
 	};
 
 	const handleDeleteTask = (taskId: string) => {
-		// Add logic here
+		deleteTask(todoList.id, taskId);
 	};
 
 	const handleUpdateTask = (taskId: string, newTitle: string) => {
-		// Add logic here
+		updateTaskTitle(todoList.id, taskId, newTitle);
 	};
-};
 
-return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Welcome to the ToDoList App!</Text>
+	return (
+		<View
+			style={{
+				flex: 1,
+				alignItems: "center",
+				justifyContent: "center",
+			}}
+		>
+			<Text>{todoList.title}</Text>
 			<TextInput
-				placeholder="Enter New Todo List Title"
-				// Add the rest here
+				placeholder="Enter New Task Title"
+				value={newTaskTitle}
+				onChangeText={(text) => setNewTaskTitle(text)}
 			/>
-			<Button
-				title="Create New To Do List"
-				onPress={/*Add function here*/}
-			/>
-			<Button title="See Todos" onPress={/*Add routing here */} />
+			<Button title="Add Task" onPress={handleAddTask} />
+			<Button title="Go Back" onPress={() => router.back()} />
+			<ScrollView>
+				<View>
+					<Button
+						title="Delete Task"
+						onPress={() => handleDeleteTask(task.id)}
+					/>
+					<Button
+						title="Update Task"
+						onPress={() =>
+							handleUpdateTask(task.id, "Updated Title")
+						}
+					/>
+				</View>
+			</ScrollView>
 		</View>
 	);
 };
