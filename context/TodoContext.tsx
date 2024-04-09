@@ -13,6 +13,14 @@ interface TodoList {
 	tasks: Task[];
 }
 
+interface TodoListFilterOptions {
+	status: "all" | "complete" | "incomplete";
+}
+
+interface TaskFilterOptions {
+	status: "all" | "complete" | "incomplete";
+}
+
 interface TodoContextType {
 	todoLists: TodoList[];
 	addTodoList: (title: string, id: string) => void;
@@ -21,6 +29,12 @@ interface TodoContextType {
 	addTask: (listId: string, taskTitle: string) => void;
 	deleteTask: (listId: string, taskId: string) => void;
 	updateTaskTitle: (listId: string, taskId: string, newTitle: string) => void;
+	toggleTaskStatus: (listId: string, taskId: string) => void;
+	filterTodoList: (options: TodoListFilterOptions) => TodoList[];
+	filterTask: (
+		listId: string,
+		options: TaskFilterOptions
+	) => Task[] | undefined;
 }
 
 const TodoContext = createContext<TodoContextType>({
@@ -31,6 +45,9 @@ const TodoContext = createContext<TodoContextType>({
 	addTask: () => {},
 	deleteTask: () => {},
 	updateTaskTitle: () => {},
+	toggleTaskStatus: () => {},
+	filterTodoList: () => [],
+	filterTask: () => undefined,
 });
 
 export const useTodoContext = () => useContext(TodoContext);
@@ -63,6 +80,23 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 				todoList.id === id ? { ...todoList, title: newTitle } : todoList
 			)
 		);
+	};
+
+	const filterTodoList = ({ status }: TodoListFilterOptions): TodoList[] => {
+		switch (status) {
+			case "all":
+				return todoLists;
+			case "complete":
+				return todoLists.filter((todoList) =>
+					todoList.tasks.every((task) => task.complete)
+				);
+			case "incomplete":
+				return todoLists.filter((todoList) =>
+					todoList.tasks.some((task) => !task.complete)
+				);
+			default:
+				return todoLists;
+		}
 	};
 
 	const addTask = (listId: string, taskTitle: string) => {
@@ -116,6 +150,42 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	const toggleTaskStatus = (listId: string, taskId: string) => {
+		setTodoLists(
+			todoLists.map((todoList) =>
+				todoList.id === listId
+					? {
+							...todoList,
+							tasks: todoList.tasks.map((task) =>
+								task.id === taskId
+									? { ...task, complete: !task.complete }
+									: task
+							),
+					  }
+					: todoList
+			)
+		);
+	};
+
+	const filterTask = (
+		listId: string,
+		{ status }: TaskFilterOptions
+	): Task[] | undefined => {
+		const todoList = todoLists.find((todoList) => todoList.id === listId);
+		if (!todoList) return undefined;
+
+		switch (status) {
+			case "all":
+				return todoList.tasks;
+			case "complete":
+				return todoList.tasks.filter((task) => task.complete);
+			case "incomplete":
+				return todoList.tasks.filter((task) => !task.complete);
+			default:
+				return todoList.tasks;
+		}
+	};
+
 	const value: TodoContextType = {
 		todoLists,
 		addTodoList,
@@ -124,6 +194,9 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		addTask,
 		deleteTask,
 		updateTaskTitle,
+		toggleTaskStatus,
+		filterTodoList,
+		filterTask,
 	};
 
 	return (
