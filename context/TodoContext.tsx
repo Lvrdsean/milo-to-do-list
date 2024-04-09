@@ -65,6 +65,57 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	const addTask = (listId: string, taskTitle: string) => {
+		const newTask: Task = {
+			id: uuidv4(),
+			title: taskTitle,
+			complete: false,
+		};
+		setTodoLists(
+			todoLists.map((todoList) =>
+				todoList.id === listId
+					? { ...todoList, tasks: [...todoList.tasks, newTask] }
+					: todoList
+			)
+		);
+	};
+
+	const deleteTask = (listId: string, taskId: string) => {
+		setTodoLists(
+			todoLists.map((todoList) =>
+				todoList.id === listId
+					? {
+							...todoList,
+							tasks: todoList.tasks.filter(
+								(task) => task.id !== taskId
+							),
+					  }
+					: todoList
+			)
+		);
+	};
+
+	const updateTaskTitle = (
+		listId: string,
+		taskId: string,
+		newTitle: string
+	) => {
+		setTodoLists(
+			todoLists.map((todoList) =>
+				todoList.id === listId
+					? {
+							...todoList,
+							tasks: todoList.tasks.map((task) =>
+								task.id === taskId
+									? { ...task, title: newTitle }
+									: task
+							),
+					  }
+					: todoList
+			)
+		);
+	};
+
 	const value: TodoContextType = {
 		todoLists,
 		addTodoList,
