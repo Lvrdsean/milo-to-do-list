@@ -64,3 +64,18 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 			)
 		);
 	};
+
+	const value: TodoContextType = {
+		todoLists,
+		addTodoList,
+		deleteTodoList,
+		updateTodoListTitle,
+		addTask,
+		deleteTask,
+		updateTaskTitle,
+	};
+
+	return (
+		<TodoContext.Provider value={value}>{children}</TodoContext.Provider>
+	);
+};
