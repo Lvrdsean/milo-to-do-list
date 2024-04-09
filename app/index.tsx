@@ -28,7 +28,11 @@ const HomeScreen: React.FC = () => {
 		updateTodoListTitle(id, newTitle);
 	};
 
-	// styles
+	// Navigate to TodoListScreen with the selected todo list's ID
+	const handleTodoListPress = (id: string) => {
+		router.navigate(`/screens/todolist/${id}`);
+	};
+
 	const styles = useStyles({
 		container: {
 			flex: 1,
@@ -38,7 +42,7 @@ const HomeScreen: React.FC = () => {
 		},
 		title: {
 			main: {
-				fontSize: 100,
+				fontSize: 50,
 				color: Colors.white,
 			},
 			phoneSm: {
@@ -50,6 +54,10 @@ const HomeScreen: React.FC = () => {
 			tablet: {
 				fontSize: 50,
 			},
+		},
+		header: {
+			fontSize: 25,
+			color: Colors.white,
 		},
 	});
 
@@ -88,11 +96,7 @@ const HomeScreen: React.FC = () => {
 							/>
 							<Button
 								title="See Todos"
-								onPress={
-									{
-										/*Add routing here */
-									}
-								}
+								onPress={() => handleTodoListPress(todoList.id)} // Pass todoList.id
 							/>
 						</View>
 					))}
