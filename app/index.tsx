@@ -1,19 +1,31 @@
 import { useStyles } from "@/hooks/useStyles";
-import { Text, View, Button, TextInput } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { router } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, Button, TextInput, ScrollView } from "react-native";
+import { useTodoContext } from "@/context/TodoContext";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "expo-router";
 
-const HomeScreen = () => {
+const HomeScreen: React.FC = () => {
+	const router = useRouter(); // Initialize useRouter
+	const { todoLists, addTodoList, deleteTodoList, updateTodoListTitle } =
+		useTodoContext();
+	const [newTitle, setNewTitle] = useState<string>("");
+
 	const handleCreateTodoList = () => {
-		// Add logic here
+		if (newTitle.trim() !== "") {
+			const id = uuidv4(); // Generate unique ID
+			addTodoList(newTitle.trim(), id); // Add new todo list
+			setNewTitle("");
+		}
 	};
 
 	const handleDeleteTodoList = (id: string) => {
-		// Add logic here
+		deleteTodoList(id);
 	};
 
 	const handleUpdateTodoListTitle = (id: string, newTitle: string) => {
-		// Add logic here
+		updateTodoListTitle(id, newTitle);
 	};
 
 	// styles
@@ -43,16 +55,49 @@ const HomeScreen = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Todo List Title Here</Text>
+			<Text style={styles.title}>Welcome to the ToDoList App!</Text>
 			<TextInput
 				placeholder="Enter New Todo List Title"
-				// Add the rest here
+				value={newTitle}
+				onChangeText={(text) => setNewTitle(text)}
+				style={styles.header}
 			/>
 			<Button
 				title="Create New To Do List"
-				onPress={/*Add function here*/}
+				onPress={handleCreateTodoList}
 			/>
-			<Button title="See Todos" onPress={/*Add routing here */} />
+			<ScrollView>
+				<View>
+					{todoLists.map((todoList) => (
+						<View key={todoList.id}>
+							<Text>{todoList.title}</Text>
+							<Button
+								title="Delete"
+								onPress={() =>
+									handleDeleteTodoList(todoList.id)
+								}
+							/>
+							<Button
+								title="Update Title"
+								onPress={() =>
+									handleUpdateTodoListTitle(
+										todoList.id,
+										"New Title"
+									)
+								}
+							/>
+							<Button
+								title="See Todos"
+								onPress={
+									{
+										/*Add routing here */
+									}
+								}
+							/>
+						</View>
+					))}
+				</View>
+			</ScrollView>
 		</View>
 	);
 };
