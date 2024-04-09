@@ -39,6 +39,14 @@ const TodoListScreen: React.FC = () => {
 		updateTaskTitle(todoList.id, taskId, newTitle);
 	};
 
+	const handleToggleTaskStatus = (taskId: string) => {
+		toggleTaskStatus(todoList.id, taskId);
+	};
+
+	const handleFilterTask = (completed: boolean | null) => {
+		setShowCompleted(completed);
+	};
+
 	return (
 		<View
 			style={{
@@ -48,6 +56,20 @@ const TodoListScreen: React.FC = () => {
 			}}
 		>
 			<Text>{todoList.title}</Text>
+			<View style={{ flexDirection: "row" }}>
+				<Button
+					title="Show All Tasks"
+					onPress={() => handleFilterTask(null)}
+				/>
+				<Button
+					title="Show Completed Tasks"
+					onPress={() => handleFilterTask(true)}
+				/>
+				<Button
+					title="Show Incomplete Tasks"
+					onPress={() => handleFilterTask(false)}
+				/>
+			</View>
 			<TextInput
 				placeholder="Enter New Task Title"
 				value={newTaskTitle}
@@ -57,16 +79,40 @@ const TodoListScreen: React.FC = () => {
 			<Button title="Go Back" onPress={() => router.back()} />
 			<ScrollView>
 				<View>
-					<Button
-						title="Delete Task"
-						onPress={() => handleDeleteTask(task.id)}
-					/>
-					<Button
-						title="Update Task"
-						onPress={() =>
-							handleUpdateTask(task.id, "Updated Title")
-						}
-					/>
+					{todoList.tasks
+						.filter((task) =>
+							showCompleted === null
+								? true
+								: task.complete === showCompleted
+						)
+						.map((task) => (
+							<View key={task.id}>
+								<Text>{task.title}</Text>
+								<Button
+									title={
+										task.complete
+											? "Mark Incomplete"
+											: "Mark Complete"
+									}
+									onPress={() =>
+										handleToggleTaskStatus(task.id)
+									}
+								/>
+								<Button
+									title="Delete Task"
+									onPress={() => handleDeleteTask(task.id)}
+								/>
+								<Button
+									title="Update Task"
+									onPress={() =>
+										handleUpdateTask(
+											task.id,
+											"Updated Title"
+										)
+									}
+								/>
+							</View>
+						))}
 				</View>
 			</ScrollView>
 		</View>
