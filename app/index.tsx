@@ -6,33 +6,34 @@ import { useTodoContext } from "@/context/TodoContext";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "expo-router";
 
+// Defining the HomeScreen component
 const HomeScreen: React.FC = () => {
-	const router = useRouter(); // Initialize useRouter
+	const router = useRouter(); // Initializing useRouter for navigation
 	const { todoLists, addTodoList, deleteTodoList, updateTodoListTitle } =
 		useTodoContext();
-	const [newTitle, setNewTitle] = useState<string>("");
+	const [newTitle, setNewTitle] = useState<string>(""); // State for new todo list title
 
+	// Function to handle creation of a new todo list
 	const handleCreateTodoList = () => {
 		if (newTitle.trim() !== "") {
+			// Check if newTitle is not empty
 			const id = uuidv4(); // Generate unique ID
-			addTodoList(newTitle.trim(), id); // Add new todo list
-			setNewTitle("");
+			addTodoList(newTitle.trim(), id); // Add new todo list with trimmed title and generated ID
+			setNewTitle(""); // Clear newTitle after adding todo list
 		}
 	};
 
+	// Function to handle deletion of a todo list
 	const handleDeleteTodoList = (id: string) => {
 		deleteTodoList(id);
 	};
 
-	const handleUpdateTodoListTitle = (id: string, newTitle: string) => {
-		updateTodoListTitle(id, newTitle);
-	};
-
-	// Navigate to TodoListScreen with the selected todo list's ID
+	// Function to navigate to TodoListScreen with the selected todo list's ID
 	const handleTodoListPress = (id: string) => {
 		router.navigate(`/screens/todolist/${id}`);
 	};
 
+	// Styles
 	const styles = useStyles({
 		container: {
 			flex: 1,
@@ -86,17 +87,8 @@ const HomeScreen: React.FC = () => {
 								}
 							/>
 							<Button
-								title="Update Title"
-								onPress={() =>
-									handleUpdateTodoListTitle(
-										todoList.id,
-										"New Title"
-									)
-								}
-							/>
-							<Button
 								title="See Todos"
-								onPress={() => handleTodoListPress(todoList.id)} // Pass todoList.id
+								onPress={() => handleTodoListPress(todoList.id)}
 							/>
 						</View>
 					))}
