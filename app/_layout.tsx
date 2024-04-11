@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import SettingsContextProvider from "@/context/SettingsProvider";
 import { Platform } from "react-native";
+import { TodoContextProvider } from "@/context/TodoContext";
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -22,7 +23,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 	const [loaded, error] = useFonts({
-		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+		RubikBold: require("@/assets/fonts/Rubik-ExtraBold.ttf"),
+		Roboto: require("@/assets/fonts/Roboto-Regular.ttf"),
 		...FontAwesome.font,
 	});
 
@@ -47,14 +49,16 @@ export default function RootLayout() {
 function RootLayoutNav() {
 	return (
 		<SettingsContextProvider>
-			<Stack
-				screenOptions={{
-					headerShown: false,
-				}}
-			>
-				<Stack.Screen name="index" />
-				<Stack.Screen name="HomeScreen" />
-			</Stack>
+			<TodoContextProvider>
+				<Stack
+					screenOptions={{
+						headerShown: false,
+					}}
+				>
+					<Stack.Screen name="index" />
+					<Stack.Screen name="HomeScreen" />
+				</Stack>
+			</TodoContextProvider>
 		</SettingsContextProvider>
 	);
 }
