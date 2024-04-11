@@ -14,10 +14,14 @@ const TodoListScreen: React.FC = () => {
 		deleteTask,
 		updateTaskTitle,
 		toggleTaskStatus,
+		filterTask,
 	} = useTodoContext();
 
 	// State to store the title of the new task
 	const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+
+	// State to manage whether to show completed tasks or not
+	const [showCompleted, setShowCompleted] = useState<boolean | null>(null);
 
 	// Find the todo list based on the ID provided
 	const todoList = todoLists.find((todoList) => todoList.id === id);
@@ -53,6 +57,11 @@ const TodoListScreen: React.FC = () => {
 		toggleTaskStatus(todoList.id, taskId);
 	};
 
+	// Function to handle filtering tasks based on completion status
+	const handleFilterTask = (completed: boolean | null) => {
+		setShowCompleted(completed);
+	};
+
 	return (
 		<View
 			style={{
@@ -62,46 +71,66 @@ const TodoListScreen: React.FC = () => {
 			}}
 		>
 			<Text>{todoList.title}</Text>
-			{/* TextInput field to enter the title of the new task */}
+			{/* Buttons to filter tasks */}
+			<View style={{ flexDirection: "row" }}>
+				<Button
+					title="Show All Tasks"
+					onPress={() => handleFilterTask(null)}
+				/>
+				<Button
+					title="Show Completed Tasks"
+					onPress={() => handleFilterTask(true)}
+				/>
+				<Button
+					title="Show Incomplete Tasks"
+					onPress={() => handleFilterTask(false)}
+				/>
+			</View>
+			{/* TextInput to add new tasks */}
 			<TextInput
 				placeholder="Enter New Task Title"
 				value={newTaskTitle}
-				onChangeText={(text) => setNewTaskTitle(text)} // Update newTaskTitle state with user input
+				onChangeText={(text) => setNewTaskTitle(text)}
 			/>
-			<Button title="Add Task" onPress={handleAddTask} />{" "}
-			{/* Button to add a new task */}
-			<Button title="Go Back" onPress={() => router.back()} />{" "}
-			{/* Button to navigate back */}
+			<Button title="Add Task" onPress={handleAddTask} />
+			<Button title="Go Back" onPress={() => router.back()} />
 			<ScrollView>
 				<View>
-					{/* Map through the tasks of the todo list and display each task */}
-					{todoList.tasks.map((task) => (
-						<View key={task.id}>
-							<Text>{task.title}</Text>
-							{/* Button to toggle task status (complete or incomplete) */}
-							<Button
-								title={
-									task.complete
-										? "Mark Incomplete"
-										: "Mark Complete"
-								}
-								onPress={() => handleToggleTaskStatus(task.id)}
-							/>
-							{/* Button to delete the task */}
-							<Button
-								title="Delete Task"
-								onPress={() => handleDeleteTask(task.id)}
-							/>
-							{/* Button to update the task title */}
-							<Button
-								title="Update Task"
-								onPress={
-									() =>
-										handleUpdateTask(task.id, newTaskTitle) // Pass newTaskTitle as the new title
-								}
-							/>
-						</View>
-					))}
+					{todoList.tasks
+						// Filter tasks based on completion status
+						.filter((task) =>
+							showCompleted === null
+								? true
+								: task.complete === showCompleted
+						)
+						.map((task) => (
+							<View key={task.id}>
+								<Text>{task.title}</Text>
+								<Button
+									title={
+										task.complete
+											? "Mark Incomplete"
+											: "Mark Complete"
+									}
+									onPress={() =>
+										handleToggleTaskStatus(task.id)
+									}
+								/>
+								<Button
+									title="Delete Task"
+									onPress={() => handleDeleteTask(task.id)}
+								/>
+								<Button
+									title="Update Task"
+									onPress={() =>
+										handleUpdateTask(
+											task.id,
+											"Updated Title"
+										)
+									}
+								/>
+							</View>
+						))}
 				</View>
 			</ScrollView>
 		</View>
