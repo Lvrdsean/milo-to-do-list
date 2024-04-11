@@ -1,5 +1,7 @@
+import { useStyles } from "@/hooks/useStyles";
+import { Colors } from "@/constants/Colors";
 import React, { useState } from "react";
-import { View, Text, Button, TextInput, ScrollView } from "react-native";
+import { View, Text, TextInput, ScrollView, Pressable } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useTodoContext } from "@/context/TodoContext";
 import { router } from "expo-router";
@@ -62,40 +64,194 @@ const TodoListScreen: React.FC = () => {
 		setShowCompleted(completed);
 	};
 
+	// Styles
+	const styles = useStyles({
+		container: {
+			flex: 1,
+			backgroundColor: Colors.blue2,
+		},
+		container2: {
+			alignItems: "center",
+		},
+		container3: {
+			flex: 0.25,
+			alignItems: "center",
+			justifyContent: "space-around",
+			flexDirection: "row",
+		},
+		container4: {
+			flex: 0.13,
+			alignItems: "center",
+			paddingHorizontal: 4,
+		},
+		container5: {
+			alignItems: "center",
+		},
+		container6: {
+			flex: 10,
+			paddingTop: 50,
+			alignItems: "center",
+		},
+		container7: {
+			flex: 10,
+			paddingTop: 50,
+			position: "absolute",
+			bottom: -575,
+			right: 10,
+		},
+		title: {
+			main: {
+				fontSize: 100,
+				color: Colors.black2,
+				fontFamily: "RubikBold",
+				textAlign: "center",
+			},
+			phoneSm: {
+				fontSize: 15,
+			},
+			phone: {
+				fontSize: 25,
+			},
+			tablet: {
+				fontSize: 50,
+			},
+		},
+		header: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+		},
+		task: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+			paddingVertical: 3,
+			textAlign: "center",
+		},
+		task2: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+			paddingVertical: 6,
+			textAlign: "center",
+		},
+		border: {
+			borderColor: Colors.black2,
+			borderWidth: 2,
+			borderRadius: 4,
+		},
+		btntext: {
+			fontSize: 25,
+			color: Colors.blue2,
+			fontFamily: "Roboto-Regular.ttf",
+		},
+		button: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.green,
+		},
+		button2: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.purple2,
+		},
+		button3: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.red2,
+		},
+		button4: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.blue3,
+		},
+		button5: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.gray,
+		},
+		button6: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 4,
+			elevation: 3,
+			backgroundColor: Colors.orange2,
+		},
+	});
+
 	return (
-		<View
-			style={{
-				flex: 1,
-				alignItems: "center",
-				justifyContent: "center",
-			}}
-		>
-			<Text>{todoList.title}</Text>
-			{/* Buttons to filter tasks */}
-			<View style={{ flexDirection: "row" }}>
-				<Button
-					title="Show All Tasks"
-					onPress={() => handleFilterTask(null)}
-				/>
-				<Button
-					title="Show Completed Tasks"
-					onPress={() => handleFilterTask(true)}
-				/>
-				<Button
-					title="Show Incomplete Tasks"
-					onPress={() => handleFilterTask(false)}
-				/>
+		<View style={styles.container}>
+			<View style={styles.container2}>
+				<Text style={styles.title} selectable={false}>
+					{todoList.title}
+				</Text>
 			</View>
-			{/* TextInput to add new tasks */}
-			<TextInput
-				placeholder="Enter New Task Title"
-				value={newTaskTitle}
-				onChangeText={(text) => setNewTaskTitle(text)}
-			/>
-			<Button title="Add Task" onPress={handleAddTask} />
-			<Button title="Go Back" onPress={() => router.back()} />
+			{/* Buttons to filter tasks */}
+			<View style={styles.container3}>
+				<Pressable
+					style={styles.button6}
+					onPress={() => handleFilterTask(null)}
+				>
+					<Text style={styles.btntext} selectable={false}>
+						Show All Tasks
+					</Text>
+				</Pressable>
+				<Pressable
+					style={styles.button6}
+					onPress={() => handleFilterTask(true)}
+				>
+					<Text style={styles.btntext} selectable={false}>
+						Show Completed Tasks
+					</Text>
+				</Pressable>
+				<Pressable
+					style={styles.button6}
+					onPress={() => handleFilterTask(false)}
+				>
+					<Text style={styles.btntext} selectable={false}>
+						Show Incompleted Tasks
+					</Text>
+				</Pressable>
+			</View>
+			<View style={styles.container3}>
+				<View style={styles.border}>
+					<TextInput
+						style={styles.task}
+						placeholder="Enter Task Here"
+						value={newTaskTitle}
+						onChangeText={(text) => setNewTaskTitle(text)}
+					/>
+				</View>
+			</View>
+			<View style={styles.container5}>
+				<Pressable style={styles.button} onPress={handleAddTask}>
+					{" "}
+					<Text style={styles.btntext} selectable={false}>
+						Add Task
+					</Text>
+				</Pressable>
+			</View>
 			<ScrollView>
-				<View>
+				<View style={styles.container6}>
 					{todoList.tasks
 						// Filter tasks based on completion status
 						.filter((task) =>
@@ -105,32 +261,69 @@ const TodoListScreen: React.FC = () => {
 						)
 						.map((task) => (
 							<View key={task.id}>
-								<Text>{task.title}</Text>
-								<Button
-									title={
-										task.complete
-											? "Mark Incomplete"
-											: "Mark Complete"
-									}
+								<Text style={styles.task2} selectable={false}>
+									{task.title}
+								</Text>
+								{/* Button to toggle task status (complete or incomplete) */}
+								<Pressable
+									style={styles.button2}
 									onPress={() =>
 										handleToggleTaskStatus(task.id)
 									}
-								/>
-								<Button
-									title="Delete Task"
-									onPress={() => handleDeleteTask(task.id)}
-								/>
-								<Button
-									title="Update Task"
-									onPress={() =>
-										handleUpdateTask(
-											task.id,
-											"Updated Title"
-										)
+								>
+									<Text
+										style={styles.btntext}
+										selectable={false}
+									>
+										{task.complete
+											? "Mark Incomplete"
+											: "Mark Complete"}
+									</Text>
+								</Pressable>
+								{/* Button to update the task title */}
+								<Pressable
+									style={styles.button4}
+									onPress={
+										() =>
+											handleUpdateTask(
+												task.id,
+												newTaskTitle
+											) // Pass newTaskTitle as the new title
 									}
-								/>
+								>
+									<Text
+										style={styles.btntext}
+										selectable={false}
+									>
+										Update Task
+									</Text>
+								</Pressable>
+								{/* Button to delete the task */}
+								<Pressable
+									style={styles.button3}
+									onPress={() => handleDeleteTask(task.id)}
+								>
+									<Text
+										style={styles.btntext}
+										selectable={false}
+									>
+										Delete Task
+									</Text>
+								</Pressable>
 							</View>
 						))}
+				</View>
+				<View style={styles.container7}>
+					{/* Button to navigate back */}
+					<Pressable
+						style={styles.button5}
+						onPress={() => router.back()}
+					>
+						{" "}
+						<Text style={styles.btntext} selectable={false}>
+							Go Back
+						</Text>
+					</Pressable>
 				</View>
 			</ScrollView>
 		</View>

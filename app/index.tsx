@@ -1,7 +1,7 @@
 import { useStyles } from "@/hooks/useStyles";
 import { Colors } from "@/constants/Colors";
 import React, { useState } from "react";
-import { View, Text, Button, TextInput, ScrollView } from "react-native";
+import { View, Text, Pressable, TextInput, ScrollView } from "react-native";
 import { useTodoContext } from "@/context/TodoContext";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "expo-router";
@@ -11,7 +11,7 @@ const HomeScreen: React.FC = () => {
 	const router = useRouter(); // Initializing useRouter for navigation
 	const { todoLists, addTodoList, deleteTodoList, updateTodoListTitle } =
 		useTodoContext();
-	const [newTitle, setNewTitle] = useState<string>(""); // State for new todo list title
+	const [newTitle, setNewTitle] = useState<string>("");
 
 	// Function to handle creation of a new todo list
 	const handleCreateTodoList = () => {
@@ -37,14 +37,32 @@ const HomeScreen: React.FC = () => {
 	const styles = useStyles({
 		container: {
 			flex: 1,
-			justifyContent: "center",
+			backgroundColor: Colors.blue2,
+		},
+		container2: {
+			flex: 0.25,
 			alignItems: "center",
-			backgroundColor: Colors.blue,
+		},
+		container3: {
+			flex: 0.13,
+			alignItems: "center",
+			paddingHorizontal: 4,
+		},
+		container4: {
+			flex: 10,
+			paddingTop: 14,
+		},
+		container5: {
+			flex: 10,
+			paddingTop: 50,
+			alignItems: "center",
 		},
 		title: {
 			main: {
-				fontSize: 50,
-				color: Colors.white,
+				fontSize: 100,
+				color: Colors.black2,
+				fontFamily: "RubikBold",
+				textAlign: "center",
 			},
 			phoneSm: {
 				fontSize: 15,
@@ -57,39 +75,117 @@ const HomeScreen: React.FC = () => {
 			},
 		},
 		header: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+			textAlign: "center",
+		},
+		todolist: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+			paddingVertical: 3,
+			textAlign: "center",
+		},
+		todolist2: {
+			fontSize: 40,
+			color: Colors.black2,
+			fontFamily: "Roboto",
+			fontWeight: "bold",
+			paddingVertical: 6,
+			textAlign: "center",
+		},
+		border: {
+			borderColor: Colors.black2,
+			borderWidth: 2,
+			borderRadius: 4,
+		},
+		button: {
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 10,
+			elevation: 3,
+			backgroundColor: Colors.green,
+		},
+		button2: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 10,
+			elevation: 3,
+			backgroundColor: Colors.red2,
+		},
+		button3: {
+			alignItems: "center",
+			paddingVertical: 9,
+			paddingHorizontal: 24,
+			borderRadius: 10,
+			elevation: 3,
+			backgroundColor: Colors.gray,
+		},
+		btntext: {
 			fontSize: 25,
-			color: Colors.white,
+			color: Colors.blue2,
+			fontFamily: "Roboto-Regular.ttf",
 		},
 	});
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Welcome to the ToDoList App!</Text>
-			<TextInput
-				placeholder="Enter New Todo List Title"
-				value={newTitle}
-				onChangeText={(text) => setNewTitle(text)}
-				style={styles.header}
-			/>
-			<Button
-				title="Create New To Do List"
-				onPress={handleCreateTodoList}
-			/>
+			<View style={styles.container2}>
+				<Text style={styles.title} selectable={false}>
+					Welcome to Sean's ToDoList App!
+				</Text>
+			</View>
+			<View>
+				<View style={styles.container3}>
+					<View style={styles.border}>
+						<TextInput
+							placeholder="Todo List Title"
+							value={newTitle}
+							onChangeText={(text) => setNewTitle(text)}
+							style={styles.todolist}
+						/>
+					</View>
+					<View style={styles.container4}>
+						<Pressable
+							style={styles.button}
+							onPress={handleCreateTodoList}
+						>
+							<Text style={styles.btntext} selectable={false}>
+								Create New To Do List
+							</Text>
+						</Pressable>
+					</View>
+				</View>
+			</View>
 			<ScrollView>
-				<View>
+				<View style={styles.container5}>
 					{todoLists.map((todoList) => (
 						<View key={todoList.id}>
-							<Text>{todoList.title}</Text>
-							<Button
-								title="Delete"
+							<Text style={styles.todolist2} selectable={false}>
+								{todoList.title}
+							</Text>
+							<Pressable
+								style={styles.button3}
+								onPress={() => handleTodoListPress(todoList.id)}
+							>
+								<Text style={styles.btntext} selectable={false}>
+									See Todos
+								</Text>
+							</Pressable>
+							<Pressable
+								style={styles.button2}
 								onPress={() =>
 									handleDeleteTodoList(todoList.id)
 								}
-							/>
-							<Button
-								title="See Todos"
-								onPress={() => handleTodoListPress(todoList.id)}
-							/>
+							>
+								<Text style={styles.btntext} selectable={false}>
+									Delete
+								</Text>
+							</Pressable>
 						</View>
 					))}
 				</View>
