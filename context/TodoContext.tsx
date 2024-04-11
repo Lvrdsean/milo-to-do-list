@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+// Interfaces for Task and TodoList
 interface Task {
 	id: string;
 	title: string;
@@ -13,6 +14,7 @@ interface TodoList {
 	tasks: Task[];
 }
 
+// Interfaces for filtering options
 interface TodoListFilterOptions {
 	status: "all" | "complete" | "incomplete";
 }
@@ -21,6 +23,7 @@ interface TaskFilterOptions {
 	status: "all" | "complete" | "incomplete";
 }
 
+// Define the type for the context
 interface TodoContextType {
 	todoLists: TodoList[];
 	addTodoList: (title: string, id: string) => void;
@@ -37,6 +40,7 @@ interface TodoContextType {
 	) => Task[] | undefined;
 }
 
+// Create the context
 const TodoContext = createContext<TodoContextType>({
 	todoLists: [],
 	addTodoList: () => {},
@@ -50,17 +54,22 @@ const TodoContext = createContext<TodoContextType>({
 	filterTask: () => undefined,
 });
 
+// Custom hook to use the context
 export const useTodoContext = () => useContext(TodoContext);
 
+// Define props for TodoContextProvider
 interface TodoContextProviderProps {
 	children: React.ReactNode;
 }
 
+// TodoContextProvider component to provide the context to its children
 export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 	children,
 }) => {
+	// State to store the todo lists
 	const [todoLists, setTodoLists] = useState<TodoList[]>([]);
 
+	// Function to add a new todo list
 	const addTodoList = (title: string, id: string) => {
 		const newTodoList: TodoList = {
 			id,
@@ -70,10 +79,12 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		setTodoLists([...todoLists, newTodoList]);
 	};
 
+	// Function to delete a todo list
 	const deleteTodoList = (id: string) => {
 		setTodoLists(todoLists.filter((todoList) => todoList.id !== id));
 	};
 
+	// Function to update the title of a todo list
 	const updateTodoListTitle = (id: string, newTitle: string) => {
 		setTodoLists(
 			todoLists.map((todoList) =>
@@ -82,6 +93,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	// Function to filter todo lists based on status
 	const filterTodoList = ({ status }: TodoListFilterOptions): TodoList[] => {
 		switch (status) {
 			case "all":
@@ -99,6 +111,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		}
 	};
 
+	// Function to add a task to a todo list
 	const addTask = (listId: string, taskTitle: string) => {
 		const newTask: Task = {
 			id: uuidv4(),
@@ -114,6 +127,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	// Function to delete a task from a todo list
 	const deleteTask = (listId: string, taskId: string) => {
 		setTodoLists(
 			todoLists.map((todoList) =>
@@ -129,6 +143,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	// Function to update the title of a task
 	const updateTaskTitle = (
 		listId: string,
 		taskId: string,
@@ -150,6 +165,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	// Function to toggle the status (complete/incomplete) of a task
 	const toggleTaskStatus = (listId: string, taskId: string) => {
 		setTodoLists(
 			todoLists.map((todoList) =>
@@ -167,6 +183,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		);
 	};
 
+	// Function to filter tasks based on status
 	const filterTask = (
 		listId: string,
 		{ status }: TaskFilterOptions
@@ -186,6 +203,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		}
 	};
 
+	// Value to be provided by the context
 	const value: TodoContextType = {
 		todoLists,
 		addTodoList,
@@ -199,6 +217,7 @@ export const TodoContextProvider: React.FC<TodoContextProviderProps> = ({
 		filterTask,
 	};
 
+	// Provide the context to its children
 	return (
 		<TodoContext.Provider value={value}>{children}</TodoContext.Provider>
 	);
